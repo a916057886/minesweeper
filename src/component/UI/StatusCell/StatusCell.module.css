@@ -1,0 +1,23 @@
+.StatusCell {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 75px;
+    height: 50px;
+    margin: 0 20px;
+    border: 5px solid #5a9e8a;
+    border-radius: 50px;
+    padding: 5px 10px;
+    background-color: #dffffb;
+    text-align: right;
+    font-size: 20px;
+    font-family: 'Secular One', sans-serif;
+}
+
+@media (max-width: 500px) {
+    .StatusCell {
+        width: 30px;
+        height: 20px;
+        font-size: 12px;
+    }
+}

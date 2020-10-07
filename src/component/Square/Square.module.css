@@ -1,0 +1,50 @@
+.Square {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+    width: 50px;
+    height: 50px;
+    background-color: #5eccb4;
+    border: 1px solid #93f3d3;
+    font-size: 24px;
+    color: transparent;
+    cursor: pointer;
+    transition: all 0.25s linear;
+}
+
+.Square:hover {
+    background-color: #1eb494;
+}
+
+@media (max-width: 500px) {
+    .Square {
+        width: 25px;
+        height: 25px;
+        font-size: 16px;
+    }
+}
+
+.Flag {
+    color: #000070 !important;
+}
+
+.Number {
+    background-color: #14adeb !important;
+    border: 1px solid #7dd9f0 !important;
+    font-weight: 700;
+    cursor: not-allowed !important;
+}
+
+.Bomb {
+    background-color: #d63561 !important;
+    border: 1px solid #fd6c6c !important;
+    color: #000000 !important;
+    cursor: not-allowed !important;
+}
+
+.Empty {
+    background-color: #14adeb !important;
+    border: 1px solid #7dd9f0 !important;
+    cursor: not-allowed !important;
+}
