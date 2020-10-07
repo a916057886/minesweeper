@@ -22,6 +22,7 @@ class Canvas extends Component {
         columns: 0,
         board: [],
         squares: 0,
+        squaresRevealed: 0,
         bombsPoints: [],
         bombs: 0,
         bombsFound: 0,
@@ -79,10 +80,10 @@ class Canvas extends Component {
     }
 
     isGameSucceeded = () => {
-        // If bombs found is greater than the total number of bombs, game is succeeded
-        if (this.state.bombsFound >= this.state.bombs) {
+        if (!this.state.success && !this.state.failed && this.state.squares - this.state.squaresRevealed === this.state.bombs) {
+            const board = this.revealAllBombs(this.state.board);
             clearInterval(this.state.timer);
-            this.setState({success: true});
+            this.setState({board: board, success: true});
         }
     }
 
@@ -98,60 +99,17 @@ class Canvas extends Component {
         return board;
     }
 
-    revealSurroundedBombs = (board, bombsPoints) => {
-        let bombCount = 0;
-
-        for (let i = 0; i < bombsPoints.length; i++) {
-            const bombPoint = bombsPoints[i];
-            // Locate all the unexposed bombs, and check if it is surrounded by revealed squares
-            if (!board[bombPoint[0]][bombPoint[1]].revealed) {
-                if (this.isBombSurrounded(board, bombPoint[0], bombPoint[1])) {
-                    board[bombPoint[0]][bombPoint[1]].revealed = true;
-                    bombCount++;
-                }
-            }
-        }
-
-        return [board, bombCount];
-    }
-
-    isBombSurrounded = (board, row, column) => {
-        let isSurrounded = true;
-
-        // Sequentially check bomb's four edge squares if exist (not including diagnoal squares)
-        isSurrounded &= this.isEdgeSurrounded(board, row, column, row - 1, column);
-        isSurrounded &= this.isEdgeSurrounded(board, row, column, row + 1, column);
-        isSurrounded &= this.isEdgeSurrounded(board, row, column, row, column - 1);
-        isSurrounded &= this.isEdgeSurrounded(board, row, column, row, column + 1);
-
-        return isSurrounded;
-    }
-
-    isEdgeSurrounded = (board, bombRow, bombColumn, edgeRow, edgeColumn) => {
-        // If this edge is the board's boundary or this edge is a square and it is already revealed
-        if (this.isIndexOutOfBounds(board, edgeRow, edgeColumn) || board[edgeRow][edgeColumn].revealed) {
-            return true;
-        }
-        // If this edge is an unexposed bomb
-        else if (!board[edgeRow][edgeColumn].revealed && board[edgeRow][edgeColumn].bombed) {
-            // Alter current bomb's revealed state to true to prevent infinite recursion
-            board[bombRow][bombColumn].revealed = true;
-            // Check if this edged bomb is also surrounded
-            const isSurrounded = this.isBombSurrounded(board, edgeRow, edgeColumn);
-            // Alter current bomb's revealed state to its original value
-            board[bombRow][bombColumn].revealed = false;
-
-            return isSurrounded;
-        }
-        else {
-            return false;
-        }
-    }
-
     revealSquare = (board, row, column) => {
         // Count the number of adjacent bombs by the given square
         const bombCount = this.adjacentBombCount(board, row, column);
 
+        if (board[row][column].flagged) {
+            this.setState(prevState => ({squaresRevealed: prevState.squaresRevealed + 1, bombsFound: prevState.bombsFound - 1}));
+        }
+        else {
+            this.setState(prevState => ({squaresRevealed: prevState.squaresRevealed + 1}));
+        }
+        
         board[row][column].revealed = true;
         board[row][column].flagged = false;
         
@@ -304,22 +262,19 @@ class Canvas extends Component {
                 this.setState({bombsPoints: bombsPoints, firstClick: false});
             }
 
-            let newBombsFound = 0;
             // If the revealed square contains a bomb, reveal all the bombs
             if (board[row][column].bombed) {
                 board = this.revealAllBombs(board);
                 clearInterval(this.state.timer);
             }
-            // If the revealed square does not contain a bomb, recursively reveal adjacent square(s) if necessary and reveal any bomb(s) surrounded by revealed squares
+            // If the revealed square does not contain a bomb, recursively reveal adjacent square(s) if necessary
             else {
                 board = this.revealSquare(board, row, column);
-                [board, newBombsFound] = this.revealSurroundedBombs(board, bombsPoints);
             }
 
             this.setState(prevState => ({
                 board: board,
                 failed: board[row][column].bombed,
-                bombsFound: prevState.bombsFound + newBombsFound,
                 moves: prevState.moves + 1
             }));
         }
@@ -330,11 +285,12 @@ class Canvas extends Component {
         if (!this.state.board[row][column].revealed) {
             const board = _.cloneDeep(this.state.board);
             const square = board[row][column];
+            const bombsFound = square.flagged ? this.state.bombsFound - 1 : this.state.bombsFound + 1;
 
             square.flagged = !square.flagged;
             board[row][column] = square;
 
-            this.setState({board: board});
+            this.setState({board: board, bombsFound: bombsFound});
         }
     }
 
@@ -389,7 +345,7 @@ class Canvas extends Component {
         else if (this.state.failed) {
             finishedMessage = (
                 <Modal fixedPosition>
-                    Bomb exploded!
+                    Mine exploded!
                     <Button clicked={this.props.restartHandler}>Restart</Button>
                 </Modal>
             );
