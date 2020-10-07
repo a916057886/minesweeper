@@ -235,29 +235,50 @@ class Canvas extends Component {
     }
 
     handleFirstClick = (row, column, board) => {
-        const bombsPoints = [];
-        let squareCount = 0;
-        let bombCount = 0;
+        // Randomly generate bombs
+        const bombsPoints = this.generateBombs(row, column);
+        console.log(bombsPoints);
 
+        // Assign value of "bombed" property to each square
         for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[i].length; j++, squareCount++) {
-                // If the square is the first-clicked square, force it to not become the bomb 
-                if (i === row && j === column) {
-                    board[i][j].bombed = false;
-                }
-                // Randomly generate the bombs for the remaining squares
-                else {
-                    const isBomb = this.randomlyBecomeBomb(this.state.squares, this.state.bombs, squareCount, bombCount);
-                    if (isBomb) {
-                        bombCount++;
-                        bombsPoints.push([i, j]);
-                    }
-                    board[i][j].bombed = isBomb;
-                }
+            for (let j = 0; j < board[i].length; j++) {
+                board[i][j].bombed = this.indexOfCoordinate(bombsPoints, i, j) >= 0;
             }
         }
 
         return [board, bombsPoints];
+    }
+
+    generateBombs = (row, column) => {
+        const bombsPoints = [];
+
+        // For each bomb, select a random x and y coordinate
+        for (let i = 0; i < this.state.bombs; i++) {
+            while (true) {
+                const x = Math.floor(Math.random() * this.state.rows);
+                const y = Math.floor(Math.random() * this.state.columns);
+
+                // If this random coordinate does not equal to the first-clicked coordiate and not equal to any of the generated bomb coodinates
+                if (x !== row && y !== column && this.indexOfCoordinate(bombsPoints, x, y) === -1) {
+                    bombsPoints.push([x, y]);
+                    break;
+                }
+            }
+        }
+
+        return bombsPoints;
+    }
+
+    indexOfCoordinate = (array, x, y) => {
+        // Check if the given coordinate already exists in the array;
+        let i = 0;
+        for (; i < array.length; i++) {
+            if (array[i][0] === x && array[i][1] === y) {
+                break;
+            }
+        }
+        
+        return i !== array.length ? i : -1;
     }
 
     randomlyBecomeBomb = (squares, bombs, squareCount, bombCount) => {
