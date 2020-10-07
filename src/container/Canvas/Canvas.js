@@ -237,7 +237,6 @@ class Canvas extends Component {
     handleFirstClick = (row, column, board) => {
         // Randomly generate bombs
         const bombsPoints = this.generateBombs(row, column);
-        console.log(bombsPoints);
 
         // Assign value of "bombed" property to each square
         for (let i = 0; i < board.length; i++) {
