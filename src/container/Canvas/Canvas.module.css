@@ -2,16 +2,3 @@
     padding: 20px;
     text-align: center;
 }
-
-.StatusBar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.Board {
-    margin-top: 20px;
-    min-width: 300px;
-    min-height: 300px;
-}

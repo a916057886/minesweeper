@@ -1,14 +1,14 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import css from './Canvas.module.css';
-import Square from '../../component/Square/Square.js';
-import StatusCell from '../../component/UI/StatusCell/StatusCell.js';
 import Modal from '../../component/UI/Modal/Modal.js';
 import Button from '../../component/UI/Button/Button.js';
+import Board from '../../component/Board/Board';
+import StatusBar from '../../component/StatusBar/StatusBar';
 
-class Canvas extends PureComponent {
+class Canvas extends Component {
     constructor(props) {
         super();
         [this.state.rows, this.state.columns] = this.calculateRowsAndColumns(window.innerWidth, props.numOfSquares);
@@ -34,6 +34,7 @@ class Canvas extends PureComponent {
     }
 
     calculateRowsAndColumns = (width, squares) => {
+        // A bunch of hardcoded columns & rows calculations
         if (width <= 1000) {
             const columns = 10;
             return [squares / columns, columns];
@@ -331,6 +332,7 @@ class Canvas extends PureComponent {
     }
 
     mouseDownHandler = (i, j) => {
+        // Set up the timeout timer when mouse is held down
         this.setState({mouseDown: setTimeout(() => {
             if (!this.state.success && !this.state.failed) {
                 this.handleRightClick(i, j);
@@ -339,6 +341,7 @@ class Canvas extends PureComponent {
     }
 
     mouseUpHandler = () => {
+        // Clear the timeout timer after mouse is no longer held down
         clearTimeout(this.state.mouseDown);
     }
 
@@ -353,6 +356,7 @@ class Canvas extends PureComponent {
     }
 
     render() {
+        // Display the appropriate message after game is finished
         let finishedMessage = null;
         if (this.state.success) {
             finishedMessage = (
@@ -374,39 +378,17 @@ class Canvas extends PureComponent {
         return (
             <Fragment>
                 <div className={css.Canvas}>
-                    <div className={css.StatusBar}>
-                        <StatusCell>
-                            {this.state.time}s
-                        </StatusCell>
-                        <StatusCell>
-                            {this.state.moves}
-                            &nbsp;&nbsp;
-                            <i className="fas fa-shoe-prints"></i>
-                        </StatusCell>
-                        <StatusCell>
-                            {this.state.bombs - this.state.bombsFound}
-                            &nbsp;&nbsp;
-                            <i className="fas fa-bomb"></i>
-                        </StatusCell>
-                    </div>
-                    <div className={css.Board}>
-                        {this.state.board.map((row, i) => (
-                            <div key={i}>
-                                {row.map((square, j) => (
-                                    <Square
-                                        key={(i * this.state.rows) + j}
-                                        revealed={square.revealed}
-                                        numeric={square.number !== undefined}
-                                        bombed={square.bombed}
-                                        flagged={square.flagged}
-                                        number={null || square.number}
-                                        clicked={(event) => this.squareClickedHandler(event, i, j)}
-                                        mouseDown={() => this.mouseDownHandler(i, j)}
-                                        mouseUp={this.mouseUpHandler} />
-                                ))}
-                            </div>
-                        ))}
-                    </div>
+                    <StatusBar
+                        time={this.state.time}
+                        moves={this.state.moves}
+                        bombs={this.state.bombs}
+                        bombsFound={this.state.bombsFound} />
+                    <Board
+                        board={this.state.board}
+                        rows={this.state.rows}
+                        clickedHandler={this.squareClickedHandler}
+                        mouseDownHandler={this.mouseDownHandler}
+                        mouseUpHandler={this.mouseUpHandler} />
                 </div>
                 {finishedMessage}
             </Fragment>
