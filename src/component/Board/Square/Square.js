@@ -57,6 +57,8 @@ const Square = (props) => {
             onMouseUp={props.mouseUp}
             onTouchStart={props.mouseDown}
             onTouchEnd={props.mouseUp}
+            onTouchMove={props.mouseUp}
+            tap
         >
             {content}
         </div>
