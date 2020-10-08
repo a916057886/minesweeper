@@ -7,6 +7,7 @@ import Modal from '../../component/UI/Modal/Modal.js';
 import Button from '../../component/UI/Button/Button.js';
 import Board from '../../component/Board/Board';
 import StatusBar from '../../component/StatusBar/StatusBar';
+import Backdrop from '../../component/UI/Backdrop/Backdrop';
 
 class Canvas extends Component {
     constructor(props) {
@@ -35,28 +36,23 @@ class Canvas extends Component {
     }
 
     calculateRowsAndColumns = (width, squares) => {
-        // A bunch of hardcoded columns & rows calculations
-        if (width <= 1000) {
-            const columns = 10;
-            return [squares / columns, columns];
-        }
-        else {
-            let columns = Math.floor(width / 50);
-            if (columns >= 20) {
-                if (squares === 100) {
-                    columns = 20;
-                }
-                else {
-                    columns = 20;
-                }
-            }
-            else if (columns >= 10) {
-                columns = 10;
+        if (squares === 100) {
+            const squareWidth = width / 10;
+            if (squareWidth >= 27) {
+                return [squares / 10, 10];
             }
             else {
-                columns = 5;
+                return [squares / 5, 5];
             }
-            return [squares / columns, columns];
+        }
+        else {
+            const squareWidth = width / 10;
+            if (squareWidth >= 27) {
+                return [squares / 10, 10];
+            }
+            else {
+                return [squares / 5, 5];
+            }
         }
     }
 
@@ -336,18 +332,24 @@ class Canvas extends Component {
         let finishedMessage = null;
         if (this.state.success) {
             finishedMessage = (
-                <Modal fixedPosition>
-                    You swept all the mines in {this.state.time}s with {this.state.moves} moves!
-                    <Button clicked={this.props.restartHandler}>Restart</Button>
-                </Modal>
+                <Fragment>
+                    <Backdrop />
+                    <Modal fixedPosition success>
+                        You swept all the mines in {this.state.time}s with {this.state.moves} moves!
+                        <Button clicked={this.props.restartHandler}>Restart</Button>
+                    </Modal>
+                </Fragment>
             );
         }
         else if (this.state.failed) {
             finishedMessage = (
-                <Modal fixedPosition>
-                    Mine exploded!
-                    <Button clicked={this.props.restartHandler}>Restart</Button>
-                </Modal>
+                <Fragment>
+                    <Backdrop />
+                    <Modal fixedPosition>
+                        Mine exploded!
+                        <Button clicked={this.props.restartHandler}>Restart</Button>
+                    </Modal>
+                </Fragment>
             );
         }
 

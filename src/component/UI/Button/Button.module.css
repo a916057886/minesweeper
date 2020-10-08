@@ -8,11 +8,11 @@
     width: 100px;
     height: 30px;
     font-size: 20px;
-    background-color: #f7d6ea;
+    background-color: #ffffff;
     cursor: pointer;
 }
 
 .Button button:hover {
-    background-color: #ffcceb;
+    background-color: #e6e6e6;
     transition: all 0.25s linear;
 }

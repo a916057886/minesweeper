@@ -27,10 +27,10 @@ class Game extends Component {
                     restartHandler={this.gameRestartHandler} />
             )
             : (
-                <Modal>
+                <Modal normal>
                     Please choose the difficulty
                     <Button clicked={() => this.buttonClickedHandler(100, 5)}>Easy</Button>
-                    <Button clicked={() => this.buttonClickedHandler(200, 40)}>Hard</Button>
+                    <Button clicked={() => this.buttonClickedHandler(200, 25)}>Hard</Button>
                 </Modal>
             );
 
