@@ -29,8 +29,8 @@ class Game extends Component {
             : (
                 <Modal normal>
                     Please choose the difficulty
-                    <Button clicked={() => this.buttonClickedHandler(100, 5)}>Easy</Button>
-                    <Button clicked={() => this.buttonClickedHandler(200, 25)}>Hard</Button>
+                    <Button clicked={() => this.buttonClickedHandler(60, 5)}>Easy</Button>
+                    <Button clicked={() => this.buttonClickedHandler(100, 20)}>Hard</Button>
                 </Modal>
             );
 

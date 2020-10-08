@@ -4,7 +4,6 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-width: 300px;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -20,8 +19,7 @@
 
 @media (max-width: 500px) {
     .Modal {
-        max-width: 300px;
-        min-width: none;
+        max-width: 275px;
     }
 }
 

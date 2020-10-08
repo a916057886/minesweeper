@@ -8,18 +8,19 @@ const Board = (props) => {
     return (
         <div className={css.Board}>
             {props.board.map((row, i) => (
-                <div key={i}>
+                <div key={i} style={{margin: "0", padding: "0"}}>
                     {row.map((square, j) => (
                         <Square
                             key={(i * props.rows) + j}
+                            dimension={props.squareDimension}
                             revealed={square.revealed}
                             numeric={square.number !== undefined}
                             bombed={square.bombed}
                             flagged={square.flagged}
                             number={null || square.number}
                             clicked={(event) => props.clickedHandler(event, i, j)}
-                            mouseDown={() => props.mouseDownHandler(i, j)}
-                            mouseUp={props.mouseUpHandler} />
+                            pointerDown={() => props.pointerDownHandler(i, j)}
+                            pointerUp={props.pointerUpHandler} />
                     ))}
                 </div>
             ))}
@@ -28,11 +29,12 @@ const Board = (props) => {
 };
 
 Board.propTypes = {
+    squareDimension: PropTypes.number.isRequired,
     board: PropTypes.array.isRequired,
     rows: PropTypes.number.isRequired,
     clickedHandler: PropTypes.func.isRequired,
-    mouseDownHandler: PropTypes.func.isRequired,
-    mouseUpHandler: PropTypes.func.isRequired
+    pointerDownHandler: PropTypes.func.isRequired,
+    pointerUpHandler: PropTypes.func.isRequired
 };
 
 export default Board;

@@ -12,7 +12,7 @@ import Backdrop from '../../component/UI/Backdrop/Backdrop';
 class Canvas extends Component {
     constructor(props) {
         super();
-        [this.state.rows, this.state.columns] = this.calculateRowsAndColumns(window.innerWidth, props.numOfSquares);
+        [this.state.rows, this.state.columns, this.state.squareDimension] = this.setup(window.innerWidth, window.innerHeight, props.numOfSquares);
         this.state.squares = props.numOfSquares;
         this.state.bombs = props.numOfBombs;
         this.state.board = this.populateBoard();
@@ -22,6 +22,7 @@ class Canvas extends Component {
         rows: 0,
         columns: 0,
         board: [],
+        squareDimension: 0,
         squares: 0,
         squaresRevealed: 0,
         bombsPoints: [],
@@ -35,25 +36,39 @@ class Canvas extends Component {
         failed: false,
     }
 
-    calculateRowsAndColumns = (width, squares) => {
-        if (squares === 100) {
-            const squareWidth = width / 10;
-            if (squareWidth >= 27) {
-                return [squares / 10, 10];
-            }
-            else {
-                return [squares / 5, 5];
+    setup = (width, height, squares) => {
+        width *= 0.8;
+        height *= 0.8;
+
+        let dimension = 67;
+        if (width <= 500) {
+            dimension = 25;
+        }
+        else if (width <= 1000) {
+            dimension = 37;
+        }
+        else if (width <= 2000) {
+            dimension = 50;
+        }
+
+        const columns = Math.floor(width / dimension);
+        const rows = Math.floor(squares / columns);
+
+        return [rows, columns, dimension];
+    }
+
+    findClosestNumber = (number, numbers) => {
+        let difference = Number.MAX_SAFE_INTEGER;
+        let closestNumberIndex = 0;
+
+        for (let i = 0; i < numbers.length; i++) {
+            if (Math.abs(number - numbers[i]) < difference) {
+                difference = Math.abs(number - numbers[i]);
+                closestNumberIndex = i;
             }
         }
-        else {
-            const squareWidth = width / 10;
-            if (squareWidth >= 27) {
-                return [squares / 10, 10];
-            }
-            else {
-                return [squares / 5, 5];
-            }
-        }
+
+        return closestNumberIndex;
     }
 
     populateBoard = () => {
@@ -255,7 +270,12 @@ class Canvas extends Component {
             let bombsPoints = this.state.bombsPoints;
             if (this.state.firstClick) {
                 [board, bombsPoints] = this.handleFirstClick(row, column, board);
-                this.setState({bombsPoints: bombsPoints, firstClick: false});
+                // Set up the timer after the board is rendered
+                this.setState({
+                    bombsPoints: bombsPoints,
+                    firstClick: false,
+                    timer: setInterval(() => this.setState(prevState => ({time: prevState.time + 1})), 1000)
+                });
             }
 
             // If the revealed square contains a bomb, reveal all the bombs
@@ -303,7 +323,7 @@ class Canvas extends Component {
         }
     }
 
-    mouseDownHandler = (i, j) => {
+    pointerDownHandler = (i, j) => {
         // Set up the timeout timer when mouse is held down
         this.setState({mouseDown: setTimeout(() => {
             if (!this.state.success && !this.state.failed) {
@@ -312,14 +332,9 @@ class Canvas extends Component {
         }, 1000)});
     }
 
-    mouseUpHandler = () => {
+    pointerUpHandler = () => {
         // Clear the timeout timer after mouse is no longer held down
         clearTimeout(this.state.mouseDown);
-    }
-
-    componentDidMount() {
-        // Set up the timer after the board is rendered
-        this.setState({timer: setInterval(() => this.setState(prevState => ({time: prevState.time + 1})), 1000)});
     }
 
     componentDidUpdate() {
@@ -362,11 +377,12 @@ class Canvas extends Component {
                         bombs={this.state.bombs}
                         bombsFound={this.state.bombsFound} />
                     <Board
+                        squareDimension={this.state.squareDimension}
                         board={this.state.board}
                         rows={this.state.rows}
                         clickedHandler={this.squareClickedHandler}
-                        mouseDownHandler={this.mouseDownHandler}
-                        mouseUpHandler={this.mouseUpHandler} />
+                        pointerDownHandler={this.pointerDownHandler}
+                        pointerUpHandler={this.pointerUpHandler} />
                 </div>
                 {finishedMessage}
             </Fragment>

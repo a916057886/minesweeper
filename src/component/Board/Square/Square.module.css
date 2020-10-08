@@ -3,11 +3,9 @@
     justify-content: center;
     align-items: center;
     vertical-align: top;
-    width: 50px;
-    height: 50px;
     background-color: #5eccb4;
     border: 1px solid #93f3d3;
-    font-size: 24px;
+    font-size: 34px;
     color: transparent;
     cursor: pointer;
     transition: all 0.25s linear;
@@ -17,10 +15,20 @@
     background-color: #1eb494;
 }
 
+@media (max-width: 2000px) {
+    .Square {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .Square {
+        font-size: 22px;
+    }
+}
+
 @media (max-width: 500px) {
     .Square {
-        width: 25px;
-        height: 25px;
         font-size: 16px;
     }
 }

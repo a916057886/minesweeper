@@ -3,22 +3,22 @@ import PropTypes from 'prop-types';
 
 import css from './Square.module.css';
 
-const getNumberStyle = (number) => {
+const getNumberColor = (number) => {
     // Choose the font color depending on the value of number
     switch (number) {
         case 1:
-            return {color: "#b0e0e6"};
+            return "#b0e0e6";
         case 2:
-            return {color: "#376c9e"};
+            return "#376c9e";
         case 3:
-            return {color: "#252577"};
+            return "#252577";
         case 4:
         case 5:
         case 6:
         case 7:
         case 8:
-            return {color: "#800000"};
-        default: return {color: "#b0e0e6"};
+            return "#800000";
+        default: return "#b0e0e6";
     }
 }
 
@@ -32,11 +32,11 @@ const Square = (props) => {
 
     // Populate the content to display in the square depending on the props
     let content = null;
-    let numberStyle = null;
+    let style = {width: props.dimension, height: props.dimension};
     // If the square is revealed and it contains a number
     if (props.revealed && props.numeric && props.number) {
         content = props.number;
-        numberStyle = getNumberStyle(props.number);
+        style.color = getNumberColor(props.number);
     }
     // If the square is revealed and it contains a bomb
     else if (props.revealed && props.bombed) {
@@ -50,15 +50,13 @@ const Square = (props) => {
     return (
         <div
             className={divCss.join(" ")}
-            style={numberStyle}
+            style={style}
             onClick={props.clicked}
             onContextMenu={props.clicked}
-            onMouseDown={props.mouseDown}
-            onMouseUp={props.mouseUp}
-            onTouchStart={props.mouseDown}
-            onTouchEnd={props.mouseUp}
-            onTouchMove={props.mouseUp}
-            tap
+            onMouseDown={props.pointerDown}
+            onMouseUp={props.pointerUp}
+            onTouchStart={props.pointerDown}
+            onTouchEnd={props.pointerUp}
         >
             {content}
         </div>
@@ -66,14 +64,15 @@ const Square = (props) => {
 };
 
 Square.propTypes = {
+    dimension: PropTypes.number.isRequired,
     revealed: PropTypes.bool.isRequired,
     numeric: PropTypes.bool.isRequired,
     bombed: PropTypes.bool,
     flagged: PropTypes.bool,
     number: PropTypes.number,
     clicked: PropTypes.func.isRequired,
-    mouseDown: PropTypes.func.isRequired,
-    mouseUp: PropTypes.func.isRequired
+    pointerDown: PropTypes.func.isRequired,
+    pointerUp: PropTypes.func.isRequired
 };
 
 export default React.memo(Square);
