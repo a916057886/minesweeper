@@ -13,7 +13,7 @@ class Canvas extends Component {
     constructor(props) {
         super();
         [this.state.rows, this.state.columns, this.state.squareDimension] = this.setup(window.innerWidth, window.innerHeight, props.numOfSquares);
-        this.state.squares = props.numOfSquares;
+        this.state.squares = this.state.rows * this.state.columns;
         this.state.bombs = props.numOfBombs;
         this.state.board = this.populateBoard();
     }
