@@ -37,9 +37,11 @@ class Canvas extends Component {
     }
 
     setup = (width, height, squares) => {
+        // PC & Tablet resolution
         if (width > 700 && height > 700) {
             return [Math.ceil(Math.sqrt(squares)), Math.ceil(Math.sqrt(squares)), 50];
         }
+        // Phone resolution
         else {
             if (width > 1000)   width = 1000;
 
@@ -54,20 +56,6 @@ class Canvas extends Component {
 
             return [rows, columns, dimension];
         }
-    }
-
-    findClosestNumber = (number, numbers) => {
-        let difference = Number.MAX_SAFE_INTEGER;
-        let closestNumberIndex = 0;
-
-        for (let i = 0; i < numbers.length; i++) {
-            if (Math.abs(number - numbers[i]) < difference) {
-                difference = Math.abs(number - numbers[i]);
-                closestNumberIndex = i;
-            }
-        }
-
-        return closestNumberIndex;
     }
 
     populateBoard = () => {
