@@ -37,24 +37,23 @@ class Canvas extends Component {
     }
 
     setup = (width, height, squares) => {
-        width *= 0.8;
-        height *= 0.8;
-
-        let dimension = 67;
-        if (width <= 500) {
-            dimension = 25;
+        if (width > 700 && height > 700) {
+            return [Math.ceil(Math.sqrt(squares)), Math.ceil(Math.sqrt(squares)), 50];
         }
-        else if (width <= 1000) {
-            dimension = 37;
-        }
-        else if (width <= 2000) {
-            dimension = 50;
-        }
+        else {
+            if (width > 1000)   width = 1000;
 
-        const columns = Math.floor(width / dimension);
-        const rows = Math.floor(squares / columns);
+            width *= 0.8;
+            height *= 0.8;
 
-        return [rows, columns, dimension];
+            let dimension = 37;
+            if (width <= 500)   dimension = 25;
+
+            const columns = Math.floor(width / dimension);
+            const rows = Math.floor(squares / columns);
+
+            return [rows, columns, dimension];
+        }
     }
 
     findClosestNumber = (number, numbers) => {
